@@ -1,0 +1,26 @@
+export const BA_CODES = [
+    { code: "211", name: "Agvo SG" },
+    { code: "101", name: "AMS-SOLAR" },
+    { code: "102", name: "AMS-WIND" },
+    { code: "103", name: "ASSET TRADE" },
+    { code: "226", name: "BESS" },
+    { code: "201", name: "DONATIONS AND GRANTS" },
+    { code: "105", name: "EPC-SOLAR" },
+    { code: "106", name: "EPC-WIND" },
+    { code: "109", name: "FREIGHT FWD" },
+    { code: "225", name: "FTL-Fleet" },
+    { code: "110", name: "FULL TRUCK LOAD" },
+    { code: "111", name: "GROUP SHARED SERVICE" },
+    { code: "112", name: "INSURANCE" },
+    { code: "227", name: "Investment Advisory Services" },
+    { code: "113", name: "IT SHARED SERVICE" },
+    { code: "114", name: "LOAN" },
+    { code: "115", name: "OMS" },
+    { code: "116", name: "SHARED SERVICES" },
+    { code: "117", name: "SOLAR PARK" },
+    { code: "118", name: "T&D" },
+    { code: "228", name: "VBD" },
+    { code: "119", name: "WAREHOUSING" },
+  ];
+
+  export const ENDPOINT = "http://localhost:4500/vendors"
