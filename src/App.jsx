@@ -53,8 +53,9 @@ const Sidebar = ({ selectedStatus, setSelectedStatus, isDetailView, setIsDetailV
 };
 
 
-
-const Topbar = () => (
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
+const Topbar = ({newVendorCount}) => (
   <div
     className="p-4 fixed top-0 left-0 w-full flex justify-between items-center shadow-md z-10"
     style={{
@@ -64,13 +65,19 @@ const Topbar = () => (
   >
   <img src={logo} alt="logo" className="w-32 h-12 " />
     {/* <h1 className="text-2xl font-bold mx-auto">Vendor Management</h1> */}
-    <button className="bg-white text-green-600 px-4 py-2 rounded mr-5">Logout</button>
+    <div className="relative mr-5">
+      <FontAwesomeIcon icon={faBell} className="text-white text-xl cursor-pointer" />
+      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-2">
+        {newVendorCount}
+      </span>
+    </div>
+    
   </div>
 );
 
 const endpoint = "http://localhost:4500/vendors";
 
-const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView }) => {
+const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewVendorCount  }) => {
   const { business_vertical } = useParams();
   const navigate = useNavigate();
   const [vendors, setVendors] = useState([]);
@@ -81,10 +88,12 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView }) => {
       .then((data) => {
         if (data.success) {
           setVendors(data.vendors.reverse());
+          setNewVendorCount(data.vendors.filter((v) => v.status === "New").length);
+          console.log(data.vendors.filter((v) => v.status === "New").length)
         }
       })
       .catch((error) => console.error("Error fetching vendors:", error));
-  }, [business_vertical]);
+  }, [business_vertical,setNewVendorCount]);
 
   const handleVendorClick = (id, status) => {
     if (status === "New") {
@@ -122,7 +131,7 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView }) => {
   return (
     <div className="max-w-8xl w-full mx-auto p-2">
     <div className="ml-80 mt-4 p-16">
-  <h2 className="text-xl font-bold mb-4">{business_vertical.toUpperCase()} Vendors</h2>
+  <h2 className="text-xl font-bold mb-4">{business_vertical.toUpperCase()} VENDORS</h2>
 
   {/* Status Summary Cards */}
   <div className="grid grid-cols-5 gap-4 mb-2 p-2 bg-[#f8f9fa] shadow-md rounded-lg border border-[#dee2e6] ">
@@ -227,12 +236,38 @@ import "react-toastify/dist/ReactToastify.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
+const BA_CODES = [
+  { code: "211", name: "Agvo SG" },
+  { code: "101", name: "AMS-SOLAR" },
+  { code: "102", name: "AMS-WIND" },
+  { code: "103", name: "ASSET TRADE" },
+  { code: "226", name: "BESS" },
+  { code: "201", name: "DONATIONS AND GRANTS" },
+  { code: "105", name: "EPC-SOLAR" },
+  { code: "106", name: "EPC-WIND" },
+  { code: "109", name: "FREIGHT FWD" },
+  { code: "225", name: "FTL-Fleet" },
+  { code: "110", name: "FULL TRUCK LOAD" },
+  { code: "111", name: "GROUP SHARED SERVICE" },
+  { code: "112", name: "INSURANCE" },
+  { code: "227", name: "Investment Advisory Services" },
+  { code: "113", name: "IT SHARED SERVICE" },
+  { code: "114", name: "LOAN" },
+  { code: "115", name: "OMS" },
+  { code: "116", name: "SHARED SERVICES" },
+  { code: "117", name: "SOLAR PARK" },
+  { code: "118", name: "T&D" },
+  { code: "228", name: "VBD" },
+  { code: "119", name: "WAREHOUSING" },
+];
+
+
 const VendorDetail = ({ setIsDetailView }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [vendor, setVendor] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
   const [isApproving, setIsApproving] = useState(false);
+  const [selectedBACodes, setSelectedBACodes] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:4500/vendors/details/${id}`)
@@ -245,28 +280,24 @@ const VendorDetail = ({ setIsDetailView }) => {
       .catch((error) => console.error("Error fetching vendor details:", error));
   }, [id]);
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-    }
+  const handleBASelection = (code) => {
+    setSelectedBACodes((prev) =>
+      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
+    );
   };
 
   const updateVendorStatus = (newStatus) => {
-    if (newStatus === "Approved" && !imageFile) {
-      alert("Please attach an image to approve.");
+    if (newStatus === "Approved" && selectedBACodes.length === 0) {
+      alert("Please choose BA Code.");
       return;
-    }
-
-    const formData = new FormData();
-    formData.append("status", newStatus);
-    if (imageFile) {
-      formData.append("image", imageFile);
     }
 
     fetch(`http://localhost:4500/vendors/${id}/status`, {
       method: "PATCH",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status: newStatus, ba_codes: selectedBACodes }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -292,11 +323,10 @@ const VendorDetail = ({ setIsDetailView }) => {
           Close
         </button>
 
-        {/* Skeleton or Vendor Details */}
         {!vendor ? (
-          <SkeletonCard /> // Show skeleton while loading
+          <p>Loading...</p>
         ) : (
-          <div className="shadow-lg rounded-lg p-6 w-full mx-auto bg-white border border-[#dee2e6]">
+          <div className="shadow-lg rounded-lg p-6 w-full mx-auto bg-white border border-gray-300">
             <h2 className="text-3xl font-bold mb-6 border-b pb-2">Vendor Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-800">
               <div>
@@ -321,18 +351,7 @@ const VendorDetail = ({ setIsDetailView }) => {
                   <span className="font-semibold">Services:</span> {vendor.select_service}
                 </p>
                 <p className="mb-2">
-                  <span className="font-semibold">Status:</span>
-                  <span
-                    className={`px-2 py-1 rounded text-sm font-bold ${
-                      vendor.status.toLowerCase() === "approved"
-                        ? "bg-green-500 text-white"
-                        : vendor.status.toLowerCase() === "rejected"
-                        ? "bg-red-500 text-white"
-                        : "bg-gray-400 text-white"
-                    }`}
-                  >
-                    {vendor.status}
-                  </span>
+                  <span className="font-semibold">Status:</span> {vendor.status}
                 </p>
               </div>
             </div>
@@ -353,18 +372,25 @@ const VendorDetail = ({ setIsDetailView }) => {
               </button>
             </div>
 
-            {/* Image Upload for Approval */}
+            {/* BA Code Selection */}
             {isApproving && (
               <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700">
-                  Attach Image for Approval
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="mt-2 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none"
-                />
+                <p className="text-sm font-medium text-gray-700 mb-2">
+                  Select BA Codes for Approval:
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {BA_CODES.map(({ code, name }) => (
+                    <label key={code} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        value={code}
+                        onChange={() => handleBASelection(code)}
+                        checked={selectedBACodes.includes(code)}
+                      />
+                      <span>{name}</span>
+                    </label>
+                  ))}
+                </div>
                 <button
                   onClick={() => updateVendorStatus("Approved")}
                   className="mt-4 bg-[#2B6C56] hover:bg-blue-600 text-white px-6 py-3 rounded-lg"
@@ -383,9 +409,11 @@ const VendorDetail = ({ setIsDetailView }) => {
 
 
 
+
 const App = () => {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [isDetailView, setIsDetailView] = useState(false);
+  const [newVendorCount, setNewVendorCount] = useState(0);
 
   return (
     <div className="flex">
@@ -394,15 +422,16 @@ const App = () => {
         setSelectedStatus={setSelectedStatus}
         isDetailView={isDetailView}
         setIsDetailView={setIsDetailView}
-      />
-      <Topbar />
+        />
+      <Topbar  newVendorCount={newVendorCount}/>
       <Routes>
       <Route
   path="/vendors/:business_vertical"
   element={
     <VendorList
-      selectedStatus={selectedStatus}
-      setSelectedStatus={setSelectedStatus}
+    selectedStatus={selectedStatus}
+    setSelectedStatus={setSelectedStatus}
+    setNewVendorCount={setNewVendorCount}
       setIsDetailView={setIsDetailView} // Pass setIsDetailView here
     />
   }
