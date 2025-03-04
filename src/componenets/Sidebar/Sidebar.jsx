@@ -14,9 +14,9 @@ const Sidebar = ({ selectedStatus, setSelectedStatus, isDetailView, setIsDetailV
           {isDetailView ? (
             // Show "View List" when in Detail View
             <button
-              className="p-2 rounded bg-gray-600 hover:bg-gray-700 transition-colors w-full"
-              onClick={() => setIsDetailView(false)}
+              className="p-2 rounded bg-[#a5be00] hover:bg-[#2b6c56] hover:border-white transition-colors w-full"
             >
+            
               Click for menu
             </button>
           ) : (
@@ -28,7 +28,7 @@ const Sidebar = ({ selectedStatus, setSelectedStatus, isDetailView, setIsDetailV
                   <li
                     key={status}
                     className={`mb-3 p-2 rounded cursor-pointer transition-colors duration-300 ${
-                      selectedStatus === status ? "bg-green-500" : "hover:bg-green-500"
+                      selectedStatus === status ? "bg-[#a5be00]" : "hover:bg-[#a5be00]"
                     }`}
                     onClick={() => setSelectedStatus(status)}
                   >

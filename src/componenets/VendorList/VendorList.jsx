@@ -55,15 +55,15 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewV
     return (
       <div className="max-w-8xl w-full mx-auto p-2">
       <div className="ml-80 mt-4 p-16">
-    <h2 className="text-xl font-bold mb-4">{business_vertical.toUpperCase()} VENDORS</h2>
+    <h2 className="text-3xl font-bold mb-4 text-[#50808e]">{business_vertical.toUpperCase()} VENDORS</h2>
   
     {/* Status Summary Cards */}
     <div className="grid grid-cols-5 gap-4 mb-2 p-2 bg-[#f8f9fa] shadow-md rounded-lg border border-[#dee2e6] ">
     {[
-      { label: "All", count: statusCounts.All, bg: "bg-[#1d4ed8]" }, // Blue
-      { label: "New", count: statusCounts.New, bg: "bg-[#f59e0b]" }, // Yellow
-      { label: "In Progress", count: statusCounts.InProgress, bg: "bg-[#ea580c]" }, // Orange
-      { label: "Approved", count: statusCounts.Approved, bg: "bg-[#16a34a]" }, // Green
+      { label: "All", count: statusCounts.All, bg: "bg-[#5bc0eb]" }, // Blue
+      { label: "New", count: statusCounts.New, bg: "bg-[#f9c80e]" }, // Yellow
+      { label: "In Progress", count: statusCounts.InProgress, bg: "bg-[#ff9f1c]" }, // Orange
+      { label: "Approved", count: statusCounts.Approved, bg: "bg-[#a5be00]" }, // Green
       { label: "Rejected", count: statusCounts.Rejected, bg: "bg-[#dc2626]" }, // Red
     ].map(({ label, count, bg }) => (
       <div
@@ -80,7 +80,10 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewV
     {/* Vendors Table */}
     <div className="shadow-lg rounded-lg p-6 w-full mx-auto bg-white border border-[#dee2e6]">
     <table className="w-full text-left border-collapse">
-      <thead className="bg-[#343a40] text-white">
+      <thead className="bg-[#343a40] text-white"
+       style={{
+        background: "linear-gradient(180deg, #50808e, #2B6C56)",
+      }}>
         <tr>
           <th className="border-b p-2">Vendor Name</th>
           <th className="border-b p-2">Status</th>
@@ -94,7 +97,7 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewV
         onClick={() => handleVendorClick(vendor._id, vendor.status)}
         className="hover:bg-[#e9ecef] cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-105"
       >
-        <td className="border-b p-2 transition-all duration-300">{vendor.vendor_name}</td>
+        <td className=" text-[#50808e] font-semibold border-b p-2 transition-all duration-300">{vendor.vendor_name}</td>
         <td
     className={`border-b p-2 font-semibold transition-all duration-300 
       ${
@@ -113,7 +116,10 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewV
   </td>
   
         <td className="border-b p-2 transition-all duration-300">
-          <button className="bg-[#198754] hover:bg-[#157347] text-white px-3 py-1 rounded transition-all duration-300">
+          <button className="hover:bg-[#157347] text-white px-3 py-1 rounded transition-all duration-300" 
+           style={{
+            background: "linear-gradient(180deg, #50808e, #2B6C56)",
+          }}>
             View Details →
           </button>
         </td>
