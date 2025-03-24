@@ -8,6 +8,7 @@ const AppRoutes = () => {
     const [selectedStatus, setSelectedStatus] = useState("All");
     const [isDetailView, setIsDetailView] = useState(false);
     const [newVendorCount, setNewVendorCount] = useState(0);
+    const [verticalName,setVerticalName]=useState("Test verticle")
   
     return (
       <div className="flex">
@@ -17,7 +18,7 @@ const AppRoutes = () => {
           isDetailView={isDetailView}
           setIsDetailView={setIsDetailView}
           />
-        <Topbar  newVendorCount={newVendorCount}/>
+        <Topbar  newVendorCount={newVendorCount} verticalName={verticalName}/>
         <Routes>
         <Route
     path="/vendors/:business_vertical"
@@ -27,6 +28,7 @@ const AppRoutes = () => {
       setSelectedStatus={setSelectedStatus}
       setNewVendorCount={setNewVendorCount}
         setIsDetailView={setIsDetailView} // Pass setIsDetailView here
+        setVerticalName={setVerticalName}
       />
     }
   />

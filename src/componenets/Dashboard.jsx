@@ -5,7 +5,7 @@ const Dashboard = () => (
       
       {/* Cards Section */}
       <div className="flex space-x-6 mt-6">
-        {['New', 'In Progress', 'Approved'].map((status, index) => (
+        {['New', 'Under Review', 'Approved'].map((status, index) => (
           <div key={index} className="flex-1 bg-white p-6 shadow rounded-lg text-center">
             <h2 className="text-xl font-bold">{status}</h2>
             <p className="text-gray-500 text-lg">10</p>

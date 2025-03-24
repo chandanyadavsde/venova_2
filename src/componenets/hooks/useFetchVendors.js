@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { ENDPOINT } from "../constant/constants";
+import { useState, useEffect } from "react";
+import { ENDPOINT } from "../constant/api";
 
-export const useVendors = (business_vertical) => {
+export const useFetchVendors = (business_vertical, setNewVendorCount) => {
   const [vendors, setVendors] = useState([]);
 
   useEffect(() => {
@@ -10,10 +10,11 @@ export const useVendors = (business_vertical) => {
       .then((data) => {
         if (data.success) {
           setVendors(data.vendors.reverse());
+          setNewVendorCount(data.vendors.filter((v) => v.status === "New").length);
         }
       })
       .catch((error) => console.error("Error fetching vendors:", error));
-  }, [business_vertical]);
+  }, [business_vertical, setNewVendorCount]);
 
-  return { vendors };
+  return { vendors, setVendors };
 };

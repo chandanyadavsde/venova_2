@@ -63,7 +63,7 @@ const VendorDetail = ({ setIsDetailView }) => {
     switch (status) {
       case "Rejected":
         return "bg-red-500 text-white";
-      case "In Progress":
+      case "Under Review":
         return "bg-orange-500 text-white";
       case "Approved":
         return "bg-green-500 text-white";
@@ -159,7 +159,9 @@ const VendorDetail = ({ setIsDetailView }) => {
                   ))}
                 </div>
                 <button
-  onClick={() => updateVendorStatus("Approved")}
+  onClick={() =>{ updateVendorStatus("Approved")
+    setIsDetailView(false)
+  }}
   className="mt-4 text-white px-6 py-3 rounded-lg transition duration-300 ease-in-out bg-gradient-to-b from-[#50808e] to-[#2B6C56] hover:from-[#2B6C56] hover:to-[#50808e]"
 >
   Submit Approval
@@ -187,6 +189,7 @@ const VendorDetail = ({ setIsDetailView }) => {
                 onClick={() => {
                   updateVendorStatus("Rejected");
                   setShowRejectModal(false);
+                  setIsDetailView(false)
                 }}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
               >
