@@ -9,7 +9,6 @@ import approved from "../../assets/images/approved.svg"
 import rejected from "../../assets/images/rejected.svg"
 import noAction from "../../assets/images/no_action.svg"
 
-import { icon } from "@fortawesome/fontawesome-svg-core";
 const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewVendorCount,setVerticalName }) => {
     const { business_vertical } = useParams();
     const navigate = useNavigate();
@@ -67,8 +66,8 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewV
       : vendors.filter((vendor) => vendor.status === selectedStatus);
   
     return (
-      <div className="max-w-8xl w-full mx-auto p-2">
-      <div className="ml-60 mt-12 p-16 bg-[#fafafb]">
+      <div className="max-w-8xl  w-full mx-auto p-2">
+      <div className="ml-60 mt-12 p-16">
         
         {/* Flex container for Cards & Table to stay aligned */}
         <div className="flex flex-col w-full">
@@ -85,7 +84,7 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewV
             ].map(({ label, count, bg, textColor, icon }) => (
               <div
                 key={label}
-                className={`flex justify-between items-center p-3 ${bg} ${textColor} rounded-lg shadow-md border border-gray-300 flex-1 min-w-[150px]`}
+                className={`flex justify-between items-center p-3 ${bg} ${textColor} rounded-lg  border border-gray-300 flex-1 min-w-[150px]`}
               >
                 <div>
                   <h3 className="text-sm font-semibold">{label}</h3>
@@ -99,57 +98,81 @@ const VendorList = ({ selectedStatus, setSelectedStatus, setIsDetailView,setNewV
           </div>
     
           {/* Vendors Table */}
-          <div className="shadow-lg rounded-lg w-full mx-auto bg-white border border-[#dee2e6] overflow-hidden">
-            <div className="overflow-x-auto w-full">
-              <table className="w-full text-left border-collapse">
-                <thead
-                  className="bg-white] text-black font-extrabold"
-                  style={{
-                    // background: "linear-gradient(180deg, #50808e, #2B6C56)",
-                    position: "sticky",
-                    top: "0",
-                    zIndex: "10",
-                  }}
+          {/* Table Container with Dynamic Height */}
+<div 
+  className="shadow-lg rounded-lg w-full mx-auto bg-white border border-[#dee2e6] overflow-hidden transition-all duration-500 ease-in-out"
+  style={{
+    maxHeight: filteredVendors.length > 0 ? `${100 + filteredVendors.length * 60}px` : "150px",
+  }}
+>
+  <div className="overflow-x-auto w-full">
+    <table className="w-full text-left border-collapse">
+      <thead
+        className="bg-white text-black font-extrabold"
+        style={{
+          position: "sticky",
+          top: "0",
+          zIndex: "10",
+        }}
+      >
+        <tr className="text-l">
+          <th className="border-b p-3">Vendor Inquiry ID</th>
+          <th className="border-b p-3">Vendor Name</th>
+          <th className="border-b p-3">Date</th>
+          <th className="border-b p-3">Status</th>
+          <th className="border-b p-3">Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredVendors.length > 0 ? (
+          filteredVendors.map((vendor) => (
+            <tr
+              key={vendor._id}
+              onClick={() => handleVendorClick(vendor._id, vendor.status)}
+              className="hover:bg-[#e9ecef] cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-102"
+            >
+              <td className="text-[#50808e] font-semibold border-b p-3">{vendor.vendor_id}</td>
+              <td className="text-[#50808e] font-semibold border-b p-3">{vendor.vendor_name}</td>
+              <td className="text-[#50808e]  font-semibold border-b p-3">
+                {new Date(vendor.updatedAt).toLocaleString("en-UK", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric"
+                })}
+              </td>
+              <td
+                className={`border-b p-3 font-semibold transition-all duration-300 
+                  ${vendor.status === "New" ? "text-[#3b82f6]" :
+                    vendor.status === "Rejected" ? "text-[#dc2626]" :
+                    vendor.status === "Under Review" ? "text-[#facc15]" :
+                    vendor.status === "No Action Taken" ? "text-[#8b5a2b]" :
+                    vendor.status === "Approved" ? "text-[#16a34a]" :
+                    "text-[#778da9]"}`}
+              >
+              {vendor.status}
+              </td>
+              <td className="border-b p-3">
+                <button
+                  className="hover:bg-[#157347] text-white px-4 py-1 rounded transition-all duration-300"
+                  style={{ background: "linear-gradient(180deg, #50808e, #2B6C56)" }}
                 >
-                  <tr className="text-xl" >
-                    <th className="border-b p-3">Vendor ID</th>
-                    <th className="border-b p-3">Vendor Name</th>
-                    <th className="border-b p-3">Date</th>
-                    <th className="border-b p-3">Status</th>
-                    <th className="border-b p-3">Details</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredVendors.map((vendor) => (
-                    <tr
-                      key={vendor._id}
-                      onClick={() => handleVendorClick(vendor._id, vendor.status)}
-                      className="hover:bg-[#e9ecef] cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-102"
-                    >
-                      <td className="text-[#50808e] font-semibold border-b p-3">#{vendor.vendor_id}</td>
-                      <td className="text-[#50808e] border-b p-3">{vendor.vendor_name}</td>
-                      <td className="text-[#50808e] border-b p-3">07 January, 2024</td>
-                      <td className={`border-b p-3 font-semibold transition-all duration-300 
-                        ${vendor.status === "New" ? "text-[#3b82f6]" :
-                          vendor.status === "Rejected" ? "text-[#dc2626]" :
-                          vendor.status === "Under Review" ? "text-[#facc15]" :
-                          vendor.status === "No Action Taken" ? "text-[#8b5a2b]" :
-                          vendor.status === "Approved" ? "text-[#16a34a]" :
-                          "text-[#778da9]"}`}>
-                        ● {vendor.status}
-                      </td>
-                      <td className="border-b p-3">
-                        <button className="hover:bg-[#157347] text-white px-4 py-1 rounded transition-all duration-300"
-                          style={{ background: "linear-gradient(180deg, #50808e, #2B6C56)" }}>
-                          View Details
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                  View Details
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="5" className="text-center p-3 text-gray-500">
+              No vendor available
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
+
     
         </div>
       </div>

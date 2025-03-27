@@ -47,13 +47,13 @@ const Sidebar = ({ selectedStatus, setSelectedStatus, isDetailView, setIsDetailV
         ) : (
           // Filters in List View
           <>
-            <h2 className="mt-16 text-xl font-bold mb-4 text-black ">Navigation</h2>
+            <h2 className="mt-16 text-xl font-semibold mb-4 text-black ">Navigation</h2>
             <ul>
               {statuses.map((status) => (
                 <li
                   key={status}
                   className={`text-black mb-3 p-2 rounded cursor-pointer transition-colors duration-300 ${
-                    selectedStatus === status ? "bg-[#a5be00]" : "hover:bg-[#a5be00]"
+                    selectedStatus === status ? "bg-[#d9d9d9]" : "hover:bg-[#d9d9d9]"
                   }`}
                   onClick={() => setSelectedStatus(status)}
                 >
